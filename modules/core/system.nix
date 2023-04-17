@@ -30,6 +30,7 @@
     XDG_CONFIG_HOME = "\${HOME}/.config";
     XDG_BIN_HOME    = "\${HOME}/.local/bin";
     NPM_HOME = "\${HOME}/.npm-global/bin";
+    HYPRSHOT_DIR =  "\${HOME}/Pictures"; 
 
     PATH = [
       "\${XDG_BIN_HOME}"
