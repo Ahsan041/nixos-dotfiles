@@ -26,11 +26,13 @@
     TERMINAL = "foot";
   };
   
-  environment.sessionVariables = rec {
+  environment.sessionVariables = {
     XDG_CONFIG_HOME = "\${HOME}/.config";
     XDG_BIN_HOME    = "\${HOME}/.local/bin";
     NPM_HOME = "\${HOME}/.npm-global/bin";
-    HYPRSHOT_DIR =  "\${HOME}/Pictures"; 
+    HYPRSHOT_DIR =  "\${HOME}/Pictures";
+    
+    #NIX_PATH = "\${HOME}/nixpkgs/lib/systems/architectures.nix ";
 
     PATH = [
       "\${XDG_BIN_HOME}"
@@ -80,6 +82,7 @@
       mode = "0440";
     };  
   };
+
   programs.thunar.plugins = with pkgs.xfce; [
     thunar-archive-plugin
     thunar-volman
