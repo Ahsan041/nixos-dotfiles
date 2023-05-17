@@ -82,6 +82,10 @@
     };
   };
 
+  fastStdenv.mkDerivation {
+    name = "env";
+  };
+
 # Autoupdate
   system.autoUpgrade = {
     enable = true;
