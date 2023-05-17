@@ -4,7 +4,7 @@
   boot = {
     tmp.cleanOnBoot = true;
     consoleLogLevel = 0;
-    kernelPackages = pkgs.linuxPackages;
+    kernelPackages = pkgs.linuxPackages_xanmod_latest;
     initrd.verbose = true;
     loader = {
       systemd-boot.enable = true;
