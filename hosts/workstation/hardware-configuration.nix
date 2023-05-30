@@ -5,40 +5,115 @@
 
 {
   imports =
-    [ (modulesPath + "/installer/scan/not-detected.nix")
-    ];
+    [ (modulesPath + "/installer/scan/not-detected.nix")];
+  
+  boot.initrd.luks.devices.luksroot = {
+    device = "/dev/disk/by-label/cryptroot";
+    preLVM = true;
+    allowDiscards = true;
+  };   
 
-  boot.initrd.availableKernelModules = [ "xhci_pci" "ahci" "nvme" "usbhid" "usb_storage" "sd_mod" ];
+  boot.initrd.availableKernelModules =
+  [
+    "xhci_pci"
+    "ahci"
+    "usbhid"
+    "sd_mod"
+    "dm_mod"
+    "dm_crypt"
+    "cryptd"
+    "input_leds"
+  ]
+  ++ config.boot.initrd.luks.cryptoModules;
   boot.initrd.kernelModules = [ ];
   boot.kernelModules = [ "kvm-intel" ];
   boot.extraModulePackages = [ ];
 
-  fileSystems."/" =
-    { device = "/dev/disk/by-uuid/ceed57f4-3feb-4f84-b48b-b9c2c102c9fe";
+  fileSystems = { 
+    "/" = { 
+      device = "/dev/disk/by-label/cryptroot";
       fsType = "btrfs";
-      options = [ "subvol=@" ];
+      options = [ 
+        "subvol=@" 
+        "compress=zstd"
+        "noatime"
+        "ssd"
+        "space_cache=v2"
+      ];
     };
 
-  boot.initrd.luks.devices."luks-5a31513c-c63f-4d76-8823-f5e82af48144".device = "/dev/disk/by-uuid/5a31513c-c63f-4d76-8823-f5e82af48144";
+    "/home" = { 
+      device = "/dev/disk/by-label/cryptroot";
+      fsType = "btrfs";
+      options = [ 
+        "subvol=@home" 
+        "compress=zstd"
+        "noatime"
+        "ssd"
+        "space_cache=v2"
+      ];
+    };
 
-  fileSystems."/boot/efi" =
-    { device = "/dev/disk/by-uuid/DFA5-75C8";
+    "/nix" = { 
+      device = "/dev/disk/by-label/cryptroot";
+      fsType = "btrfs";
+      options = [ 
+        "subvol=@nix" 
+        "compress=zstd"
+        "noatime"
+        "ssd"
+        "space_cache=v2"
+      ];
+    };
+
+    "/tmp" = { 
+      device = "/dev/disk/by-label/cryptroot";
+      fsType = "btrfs";
+      options = [ 
+        "subvol=@tmp" 
+        "compress=zstd"
+        "noatime"
+        "ssd"
+        "space_cache=v2"
+      ];
+    };
+
+    "/var" = { 
+      device = "/dev/disk/by-label/cryptroot";
+      fsType = "btrfs";
+      options = [ 
+        "subvol=@var" 
+        "compress=zstd"
+        "noatime"
+        "ssd"
+        "space_cache=v2"
+      ];
+    };
+    
+    "/var/log" = { 
+      device = "/dev/disk/by-label/cryptroot";
+      fsType = "btrfs";
+      options = [ 
+        "subvol=@log" 
+        "compress=zstd"
+        "noatime"
+        "ssd"
+        "space_cache=v2"
+      ];
+    };
+  };
+
+  fileSystems."/boot" =
+    { device = "/dev/disk/by-label/boot";
       fsType = "vfat";
     };
 
-  swapDevices =
-    [ { device = "/dev/disk/by-uuid/9bb0fd09-9e7f-427f-b91c-1f7a2d03aa10"; }
-    ];
+  swapDevices = [{ device = "/dev/disk/by-label/swap"; }];
 
-  # Enables DHCP on each ethernet and wireless interface. In case of scripted networking
-  # (the default) this is the recommended approach. When using systemd-networkd it's
-  # still possible to use this option, but it's recommended to use it in conjunction
-  # with explicit per-interface declarations with `networking.interfaces.<interface>.useDHCP`.
   networking.useDHCP = lib.mkDefault true;
   # networking.interfaces.enp4s0.useDHCP = lib.mkDefault true;
   # networking.interfaces.wlo1.useDHCP = lib.mkDefault true;
 
-  nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
   powerManagement.cpuFreqGovernor = lib.mkDefault "performance";
   hardware.cpu.intel.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
 }

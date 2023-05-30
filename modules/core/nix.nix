@@ -21,7 +21,7 @@
       tarball-ttl = 0;
     };
     
-    localSystem = {
+    hostPlatform = {
       gcc.arch = "native";
       gcc.tune = "native";
       system = "x86_64-linux";
@@ -52,7 +52,13 @@
     };
     #package = pkgs.nixUnstable;
     package = pkgs.nixFlakes;
-
+    system-features = [
+      "nixos-test" 
+      "benchmark" 
+      "big-parallel" 
+      "kvm" 
+      "gccarch-native"
+    ];
 
     # pin the registry to avoid downloading and evaling a new nixpkgs version every time
     registry = lib.mapAttrs (_: v: {flake = v;}) inputs;

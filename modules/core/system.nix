@@ -22,8 +22,8 @@
 
   environment.variables = {
     EDITOR = "nvim";
-    BROWSER = "firefox";
-    TERMINAL = "foot";
+    BROWSER = "brave";
+    TERMINAL = "kitty";
   };
   
   environment.sessionVariables = {
